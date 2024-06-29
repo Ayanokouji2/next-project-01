@@ -2,13 +2,14 @@ import connectDB from "@/dbconnection/connect";
 import userModel from "@/models/user.model";
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
-connectDB()
+// connectDB()
 
 export async function POST(req: NextRequest) {
     try {
         const { email, password } = await req.json()
-        if(!email || !password){
+        if (!email || !password) {
             return NextResponse.json({
                 error: 'Please fill all fields',
                 success: false,
@@ -16,9 +17,9 @@ export async function POST(req: NextRequest) {
             })
         }
 
-        const user = await userModel.findOne({email})
+        const user = await userModel.findOne({ email })
 
-        if(!user){
+        if (!user) {
             return NextResponse.json({
                 error: 'User not found',
                 success: false,
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
 
         const isMatch = await bcrypt.compare(password, user.password)
 
-        if(!isMatch){
+        if (!isMatch) {
             return NextResponse.json({
                 error: 'Invalid credentials',
                 success: false,
@@ -38,13 +39,23 @@ export async function POST(req: NextRequest) {
 
         user.password = undefined
 
-        return NextResponse.json({
+        const userToken: string = jwt.sign({
+            _id: user._id,
+            email: user.email
+        }, process.env.SECRET_TOKEN as string, { expiresIn: '1h' })
+
+        const response = NextResponse.json({
             success: true,
             status: 200,
-            user 
+            user,
         })
+
+        response.cookies.set('token', userToken, { httpOnly: true, secure: true })
+
+
+        return response
     } catch (error: unknown) {
-        return NextResponse.json({ 
+        return NextResponse.json({
             error: (error as Error).message,
             success: false,
             status: 500
