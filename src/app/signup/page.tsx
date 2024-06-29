@@ -2,21 +2,50 @@
 
 import Link from 'next/link';
 import axios from 'axios';
-import React from 'react';
-
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-export default function page() {
-    const [user, setUser] = React.useState({
+import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+
+export default function Page() {
+
+    const router = useRouter();
+    const [disabledButton, setDisabledButton] = useState(true);
+
+    const [user, setUser] = useState({
         username: '',
         email: '',
         password: '',
     });
 
-    const onSignup = async () => {};
+    useEffect(() => {
+        if (
+            user.username.length > 0 &&
+            user.email.length > 0 &&
+            user.password.length > 0
+        ) {
+            setDisabledButton(false);
+        } else {
+            setDisabledButton(true);
+        }
+    }, [user]);
+
+    const onSignup = async () => {
+        const response = await axios.post('/api/user/signup', user);
+
+        if (!response.data.success) {
+            toast.error(response.data.error);
+        }
+        else{
+            toast.success('Signup successful');
+            router.push('/login');
+        }
+    };
 
     return (
-        <main className=" h-screen overflow-hidden">
-            <div className="h-full rounded-xl bg-[#F5F9FC] ">
+        <main className="h-screen overflow-hidden">
+            <Toaster position="top-center"/>
+            <div className="h-full rounded-xl bg-[#F5F9FC]">
                 <div className="text-blue-600 font-bold text-center text-2xl py-7">
                     <p>Sign up</p>
                     <span className="text-gray-400 font-normal text-base">
@@ -24,7 +53,7 @@ export default function page() {
                     </span>
                 </div>
 
-                <button className="w-full flex justify-center ">
+                <button className="w-full flex justify-center">
                     <div className="flex justify-center items-center gap-2 bg-white w-[16rem] p-3 rounded-xl shadow-2xl">
                         <Image
                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYBSO99IGM1cKZInah4wlYoi20FT7xEc3PPw&s"
@@ -33,8 +62,7 @@ export default function page() {
                             width={40}
                             height={40}
                         />
-                        <p className=" text-blue-600/50 font-semibold">
-                            {' '}
+                        <p className="text-blue-600/50 font-semibold">
                             use google account or
                         </p>
                     </div>
@@ -43,11 +71,11 @@ export default function page() {
                     or
                 </p>
 
-                <div className=" flex flex-col gap-5 justify-center items-center text-gray-400 font-normal text-base  w-[30rem] shadow-xl mx-auto rounded-lg mt-3 p-5 bg-white">
+                <div className="flex flex-col gap-5 justify-center items-center text-gray-400 font-normal text-base w-[30rem] shadow-xl mx-auto rounded-lg mt-3 p-5 bg-white">
                     <div className="flex justify-between px-11 items-center w-full">
                         <label htmlFor="username">username</label>
                         <input
-                            className="focus:outline-none shadow-inner bg-black/5 border-b-2 focus:border-b-blue-300 text-black/80 font-semibold p-2 rounded-lg "
+                            className="focus:outline-none shadow-inner bg-black/5 border-b-2 focus:border-b-blue-300 text-black/80 font-semibold p-2 rounded-lg"
                             type="text"
                             id="username"
                             value={user.username}
@@ -59,12 +87,11 @@ export default function page() {
                             }
                         />
                     </div>
-
                     <div className="flex justify-between px-11 items-center w-full">
                         <label htmlFor="email">email</label>
                         <input
-                            className="focus:outline-none shadow-inner bg-black/5 border-b-2 focus:border-b-blue-300 text-black/80 font-semibold p-2 rounded-lg "
-                            type="email"
+                            className="focus:outline-none shadow-inner bg-black/5 border-b-2 focus:border-b-blue-300 text-black/80 font-semibold p-2 rounded-lg"
+                            type="mail"
                             id="email"
                             value={user.email}
                             onChange={(e) =>
@@ -75,11 +102,10 @@ export default function page() {
                             }
                         />
                     </div>
-
                     <div className="flex justify-between px-11 items-center w-full">
                         <label htmlFor="password">password</label>
                         <input
-                            className="focus:outline-none shadow-inner bg-black/5 border-b-2 focus:border-b-blue-300 text-black/80 font-semibold p-2 rounded-lg "
+                            className="focus:outline-none shadow-inner bg-black/5 border-b-2 focus:border-b-blue-300 text-black/80 font-semibold p-2 rounded-lg"
                             type="password"
                             id="password"
                             value={user.password}
@@ -91,23 +117,22 @@ export default function page() {
                             }
                         />
                     </div>
-
                     <button
-                        className="bg-blue-600 py-2 px-4 rounded-lg text-white font-mono font-semibold"
+                        className="bg-blue-600 py-2 px-4 rounded-lg text-white font-mono font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        disabled={disabledButton}
                         onClick={onSignup}
                     >
                         Sign up
                     </button>
-
-                    <p className="font-mono">
-                        Already a user?{' '}
+                    <span className="font-mono">
+                        Already a user?
                         <Link
                             href="/login"
-                            className="text-blue-500 font-semibold font-mono"
+                            className="text-blue-500 font-semibold font-mono ml-1"
                         >
                             login
-                        </Link>{' '}
-                    </p>
+                        </Link>
+                    </span>
                 </div>
             </div>
         </main>

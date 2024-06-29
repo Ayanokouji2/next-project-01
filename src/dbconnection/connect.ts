@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 
-const MONGO_URI: string = process.env.MONG_URI!
+const MONGO_URI: string = process.env.MONGO_URI!
 const connectDB = async (): Promise<void> => {
     try {
-        mongoose.connect(`${MONGO_URI}/local`)
+        console.log('Connecting to database')
+        mongoose.connect(`${MONGO_URI}/next-auth`)
         const connection = mongoose.connection;
         connection.on('connected', () => {
             console.log(`Connected to database ${mongoose.connection.name}`);
