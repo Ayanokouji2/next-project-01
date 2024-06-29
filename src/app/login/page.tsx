@@ -3,17 +3,30 @@
 import Link from 'next/link';
 import axios from 'axios';
 import React from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function page() {
+
+    const router = useRouter()
     const [user, setUser] = React.useState({
         email: '',
         password: '',
     });
 
-    const onLogin = async () => {};
+    const onLogin = async () => {
+        const response = await axios.post('/api/user/login', user);
+        console.log(response.data)
+        if(!response.data.success){
+            toast.error(response.data.error)
+        }else{
+            router.push(`/profile/${response.data.user._id}`)
+        }
+    };
 
     return (
         <main className=" h-screen overflow-hidden">
+            <Toaster position="top-center" />
             <div className="h-full rounded-xl bg-[#F5F9FC] ">
                 <div className="text-blue-600 font-bold text-center text-2xl py-7">
                     <p>Login </p>
