@@ -15,11 +15,13 @@ export default function page() {
     });
 
     const onLogin = async () => {
+        toast.loading('Logging in...', { duration: 200 })
         const response = await axios.post('/api/user/login', user);
-        console.log(response.data)
+
         if(!response.data.success){
             toast.error(response.data.error)
         }else{
+            toast.success('Logged in successfully')
             router.push(`/profile/${response.data.user._id}`)
         }
     };
