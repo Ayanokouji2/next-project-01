@@ -5,10 +5,11 @@ export interface UserType extends Document {
     email: string
     password: string
     role: string
+    isverified: boolean
     resetPasswordToken: string
     resetPasswordTokenExpiry: Date
-    refreshToken: string
-    refreshTokenExpiry: Date
+    verifyToken: string
+    verifyTokenExpiry: Date
 }
 
 const userSchema = new Schema<UserType>({
@@ -31,6 +32,10 @@ const userSchema = new Schema<UserType>({
         required: true,
         trim: true,
     },
+    isverified: {
+        type: Boolean,
+        default: false,
+    },
     role: {
         type: String,
         enum: ['user', 'admin', 'staff'],
@@ -38,8 +43,8 @@ const userSchema = new Schema<UserType>({
     },
     resetPasswordToken: String,
     resetPasswordTokenExpiry: Date,
-    refreshToken: String,
-    refreshTokenExpiry: Date,
+    verifyToken: String,
+    verifyTokenExpiry: Date,
 }, { timestamps: true })
 
 

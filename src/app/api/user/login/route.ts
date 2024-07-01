@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         })
 
         response.cookies.set('token', userToken, { httpOnly: true, secure: true })
-
+        
 
         return response
     } catch (error: unknown) {

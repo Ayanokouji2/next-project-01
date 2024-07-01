@@ -1,34 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server'
+import userModel, { UserType } from '@/models/user.model'
 import jwt from 'jsonwebtoken'
 
 const SECRET = process.env.SECRET_TOKEN as string | undefined
 
-export function DataFromToken(req: NextRequest) : NextResponse{
+export async function DataFromToken(token : string) : Promise<UserType | null>{
 
     try {
-        const token = req.cookies.get('token')?.value as string | ""
 
         if (!token) {
-            return NextResponse.json({
-                success: false,
-                error: 'No token found',
-                status: 401
-            })
+            return null
         }
 
         const user =  jwt.verify(token, SECRET as string ) as { _id : string, email : string }
 
-        return NextResponse.json({
-            status: 200,
-            success: true,
-            user
-        })
+        const userFromDB  = await userModel.findById(user._id!)
+
+        if(!userFromDB){
+            return null
+        }
+
+        return userFromDB
     } catch (error: unknown) {
         console.log((error as Error).message)
-        return NextResponse.json({
-            success: false,
-            error: (error as Error).message,
-            status: 500
-        })
+        return null
     }
 }
