@@ -1,8 +1,6 @@
 import nodemailer from 'nodemailer'
 import bcrypt from 'bcrypt'
 import userModel from '@/models/user.model'
-import { hash } from 'crypto';
-
 
 async function sendMail({ email, subject, userId }: any) {
 
@@ -21,7 +19,6 @@ async function sendMail({ email, subject, userId }: any) {
                 resetPasswordTokenExpiry: new Date(Date.now() + 1200000)
             })
 
-        console.log(hashedToken, userId, response)
         const mailConfig = {
             from: 'shivam@gmail.com',
             to: email,
