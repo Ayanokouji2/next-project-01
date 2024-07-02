@@ -5,12 +5,14 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { UserType } from '@/models/user.model';
+import { Loader } from '@/utils/Loader';
 
 export default function Page() {
     const router = useRouter();
 
     const [verified, setVerified] = useState<boolean>(false);
     const [user, setUser] = useState<Partial<UserType>>();
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         (async () => {
@@ -26,25 +28,30 @@ export default function Page() {
                     setVerified(data?.user?.isverified || false);
                 }
             } catch (error: unknown) {
-                toast.error('Something went wrong while fetching profile data '+(error as Error).message);
+                toast.error(
+                    'Something went wrong while fetching profile data ' +
+                        (error as Error).message
+                );
             }
         })();
     }, [router]);
 
-  
-
     const handleVerification = async () => {
         try {
-            const response = await axios.post('/api/sendEmail', { user })
+            setLoading(true);
+            const response = await axios.post('/api/sendEmail', { user });
             const data = await response.data;
-            if(data.success)
-                toast.success('Verification email sent, please check your email');
-            else{
+            if (data.success)
+                toast.success(
+                    'Verification email sent, please check your email'
+                );
+            else {
                 toast.error(data.error);
             }
-
         } catch (error: unknown) {
             toast.error('Something went wrong while verifying email');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -64,10 +71,12 @@ export default function Page() {
         }
     };
     return (
-        <main className="text-center  mt-5 text-3xl font-semibold text-white">
+        <main className="text-center  mt-5 text-3xl font-semibold text-white overflow-hidden">
             <h1>Profile Page</h1>
 
-            {verified ? (
+            {loading ? (
+                <Loader />
+            ) : verified ? (
                 <h2 className="text-green-500">Email Verified</h2>
             ) : (
                 <>
@@ -78,15 +87,17 @@ export default function Page() {
                     >
                         Click to Verify
                     </button>
+
+                    <br />
+
+                    <button
+                        className="ml-5 bg-red-500 text-white px-4 py-2 rounded-md mt-5"
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </button>
                 </>
             )}
-
-            <button
-                className="ml-5 bg-red-500 text-white px-4 py-2 rounded-md mt-5"
-                onClick={handleLogout}
-            >
-                Logout
-            </button>
         </main>
     );
 }

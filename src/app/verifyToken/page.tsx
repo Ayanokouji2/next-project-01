@@ -15,11 +15,9 @@ export default function VerifyToken() {
             const response = await axios.get(`/api/verifyToken?token=${token}`)
             const data = await response.data
 
-            console.log(data)
 
             if(data.success){
                 toast.success(data.message)
-                console.log(data.user._id)
                 router.push(`/profile/${data.user._id}`)
             }
             else{

@@ -4,8 +4,6 @@ import userModel from '@/models/user.model'
 
 async function sendMail({ email, subject, userId }: any) {
 
-   
-
     try {
         const hashedToken = await bcrypt.hash(userId, 10);
 
@@ -27,7 +25,6 @@ async function sendMail({ email, subject, userId }: any) {
         click <p>Click on the link below to verify your email</p> <a href="${process.env.DOMAIN}/verifyToken?token=${hashedToken}">here</a> to verify your email.`
         }
 
-        console.log("Mail Config : ", mailConfig)
 
         const transporter = nodemailer.createTransport({
             host: "sandbox.smtp.mailtrap.io",
@@ -41,7 +38,6 @@ async function sendMail({ email, subject, userId }: any) {
 
         const info = await transporter.sendMail(mailConfig)
 
-        console.log("Message sent: %s", info.messageId)
         return info
     } catch (error: unknown) {
         console.log("Error while sending Mail : ", (error as Error).message)
