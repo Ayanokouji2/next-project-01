@@ -8,9 +8,9 @@ connectDB();
 
 export async function POST(req: NextRequest) {
     try {
-        const {user}  = await req.json()
+        const {user, subject}  = await req.json()
 
-        const response = await sendMail({email: user.email, subject: 'verify', userId: user._id})
+        const response = await sendMail({email: user.email, subject, userId: user._id})
 
         if(!response){
             return NextResponse.json({

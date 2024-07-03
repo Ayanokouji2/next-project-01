@@ -1,6 +1,7 @@
 import userModel from "@/models/user.model";
 import connectDB from "@/dbconnection/connect";
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from 'bcrypt';
 
 connectDB();
 
@@ -10,12 +11,12 @@ export async function POST( request : NextRequest ){
 
         if(!token){
             return NextResponse.json({
-                error: 'Invalid token',
+                error: 'No token found',
                 status: 400
             })
         }
 
-        const user = await userModel.findOne({ resetPasswordToken : token, resetPasswordExpires : { $gt : Date.now() } });
+        const user = await userModel.findOne({ resetPasswordToken: token, resetPasswordTokenExpiry: { $gt: new Date(Date.now()) } }).select("-password")
 
         if(!user){
             return NextResponse.json({
@@ -26,7 +27,7 @@ export async function POST( request : NextRequest ){
 
         const reqBody = await request.json()
 
-        user.password = reqBody.password;
+        user.password = await bcrypt.hash(reqBody.password, 10)
         user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
 

@@ -14,15 +14,17 @@ async function sendMail({ email, subject, userId }: any) {
             }) :
             await userModel.findOneAndUpdate({ _id: userId }, {
                 resetPasswordToken: hashedToken,
-                resetPasswordTokenExpiry: new Date(Date.now() + 1200000)
+                resetPasswordTokenExpiry: new Date(Date.now() + 3600000)
             })
+
+        const message = subject === 'verify' ? `<h4> This is a mail for You</h4> 
+        <p>Click on the link below to verify your email</p> <a href="${process.env.DOMAIN}/verifyToken?token=${hashedToken}">here</a> to verify your email.` : `<h4> This is a mail for You</h4>  <p> click on the link below to reset your password</p> <a href="${process.env.DOMAIN}/recoveryPassword?token=${hashedToken}">here</a> to reset your password.`
 
         const mailConfig = {
             from: 'shivam@gmail.com',
             to: email,
-            subject : subject === 'verify' ? 'Verify your email' : 'Reset your password',
-            html: `<h4> This is a mail for You</h4> 
-        click <p>Click on the link below to verify your email</p> <a href="${process.env.DOMAIN}/verifyToken?token=${hashedToken}">here</a> to verify your email.`
+            subject: subject === 'verify' ? 'Verify your email' : 'Reset your password',
+            html: message
         }
 
 
@@ -33,7 +35,7 @@ async function sendMail({ email, subject, userId }: any) {
                 user: process.env.MAIL_USER as string,
                 pass: process.env.MAIL_PASS as string
             }
-    
+
         })
 
         const info = await transporter.sendMail(mailConfig)

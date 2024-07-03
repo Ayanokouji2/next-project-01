@@ -40,7 +40,7 @@ export default function Page() {
         try {
             setLoading(true);
             toast.loading('Sending verification email');
-            const response = await axios.post('/api/sendEmail', { user });
+            const response = await axios.post('/api/sendEmail', { user, subject: 'verify' });
             const data = await response.data;
             toast.dismiss();
             if (data.success)
@@ -77,7 +77,7 @@ export default function Page() {
     const handleResetPassword = async () :Promise<void>=>{
         try{
             toast.loading('Sending reset password email')
-            const response = await axios.post('/api/sendEmail',{user})
+            const response = await axios.post('/api/sendEmail',{user, subject: 'reset'})
             const data = await response.data;
 
             toast.dismiss()
