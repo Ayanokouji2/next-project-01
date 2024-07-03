@@ -1,14 +1,14 @@
-import userModel from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/dbconnection/connect";
 import sendMail from "@/helpers/MailHelper";
+import { UserType } from "@/models/user.model";
 
 
 connectDB();
 
 export async function POST(req: NextRequest) {
     try {
-        const {user} = await req.json()
+        const {user}  = await req.json()
 
         const response = await sendMail({email: user.email, subject: 'verify', userId: user._id})
 

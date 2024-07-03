@@ -39,8 +39,10 @@ export default function Page() {
     const handleVerification = async () => {
         try {
             setLoading(true);
+            toast.loading('Sending verification email');
             const response = await axios.post('/api/sendEmail', { user });
             const data = await response.data;
+            toast.dismiss();
             if (data.success)
                 toast.success(
                     'Verification email sent, please check your email'
@@ -57,9 +59,10 @@ export default function Page() {
 
     const handleLogout = async () => {
         try {
+            toast.loading('Logging out');
             const response = await axios.get('/api/user/logout');
             const data = await response.data;
-
+            toast.dismiss();
             if (!data.success) {
                 toast.error(data.error);
             } else {
@@ -70,26 +73,52 @@ export default function Page() {
             toast.error('Something went wrong while logging out');
         }
     };
+
+    const handleResetPassword = async () :Promise<void>=>{
+        try{
+            toast.loading('Sending reset password email')
+            const response = await axios.post('/api/sendEmail',{user})
+            const data = await response.data;
+
+            toast.dismiss()
+            if(data.success){
+                toast.success('Reset password email sent, please check your email');
+            }else{
+                toast.error(data.error);
+            }
+        }
+        catch(error:unknown){
+            toast.error((error as Error).message );
+        }
+    }
+
     return (
         <main className="text-center  mt-5 text-3xl font-semibold text-white overflow-hidden">
             <h1>Profile Page</h1>
 
             {loading ? (
                 <Loader />
-            ) : verified ? (
-                <h2 className="text-green-500">Email Verified</h2>
             ) : (
                 <>
-                    <h2 className="text-red-500">Email Not Verified</h2>
+                    {verified ? (
+                        <h2 className="text-green-500">Email Verified</h2>
+                    ) : (
+                        <>
+                            <h2 className="text-red-500">Email Not Verified</h2>
+                            <button
+                                className="bg-blue-500 text-white px-4 py-2 rounded-md mt-5"
+                                onClick={handleVerification}
+                            >
+                                Click to Verify
+                            </button>
+                        </>
+                    )}
                     <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md mt-5"
-                        onClick={handleVerification}
+                        className={`bg-indigo-600 py-2 px-4 text-white rounded-md `}
+                        onClick={handleResetPassword}
                     >
-                        Click to Verify
+                        Reset Password
                     </button>
-
-                    <br />
-
                     <button
                         className="ml-5 bg-red-500 text-white px-4 py-2 rounded-md mt-5"
                         onClick={handleLogout}

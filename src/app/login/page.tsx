@@ -7,22 +7,21 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 export default function page() {
-
-    const router = useRouter()
+    const router = useRouter();
     const [user, setUser] = React.useState({
         email: '',
         password: '',
     });
 
     const onLogin = async () => {
-        toast.loading('Logging in...', { duration: 200 })
+        toast.loading('Logging in...', { duration: 200 });
         const response = await axios.post('/api/user/login', user);
 
-        if(!response.data.success){
-            toast.error(response.data.error)
-        }else{
-            toast.success('Logged in successfully')
-            router.push(`/profile/${response.data.user._id}`)
+        if (!response.data.success) {
+            toast.error(response.data.error);
+        } else {
+            toast.success('Logged in successfully');
+            router.push(`/profile/${response.data.user._id}`);
         }
     };
 
@@ -37,10 +36,7 @@ export default function page() {
                     </span>
                 </div>
 
-                
-
                 <div className=" flex flex-col gap-5 justify-center items-center text-gray-400 font-normal text-base  w-[30rem] shadow-xl mx-auto rounded-lg mt-3 p-5 bg-white">
-                    
                     <div className="flex justify-between px-11 items-center w-full">
                         <label htmlFor="email">email</label>
                         <input
@@ -80,6 +76,8 @@ export default function page() {
                         Login
                     </button>
 
+                    
+                    
                     <p className="font-mono">
                         New to community?{' '}
                         <Link

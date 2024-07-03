@@ -43,7 +43,7 @@ export default function Page() {
     };
 
     return (
-        <main className="h-screen overflow-hidden">
+        <div className="h-screen overflow-hidden">
             <Toaster position="top-center"/>
             <div className="h-full rounded-xl bg-[#F5F9FC]">
                 <div className="text-blue-600 font-bold text-center text-2xl py-7">
@@ -54,7 +54,7 @@ export default function Page() {
                 </div>
 
                 <button className="w-full flex justify-center">
-                    <div className="flex justify-center items-center gap-2 bg-white w-[16rem] p-3 rounded-xl shadow-2xl">
+                <div className="flex justify-center items-center gap-2 bg-white w-[16rem] p-3 rounded-xl shadow-2xl">
                         <Image
                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYBSO99IGM1cKZInah4wlYoi20FT7xEc3PPw&s"
                             className="rounded-3xl"
@@ -63,7 +63,7 @@ export default function Page() {
                             height={40}
                         />
                         <p className="text-blue-600/50 font-semibold">
-                            use google account or
+                            use google account 
                         </p>
                     </div>
                 </button>
@@ -135,6 +135,6 @@ export default function Page() {
                     </span>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }

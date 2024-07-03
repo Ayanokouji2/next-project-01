@@ -31,6 +31,7 @@ export async function POST( request : NextRequest ){
         user.resetPasswordExpires = undefined;
 
         await user.save();
+        
         return NextResponse.json({
             message: 'Password updated successfully',
             status: 200
