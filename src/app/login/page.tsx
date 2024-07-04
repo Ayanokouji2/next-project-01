@@ -76,7 +76,8 @@ export default function page() {
                         Login
                     </button>
 
-                    
+                    <Link href='/resetPassword'
+                        className='text-blue-500 font-mono'>Forgot Password ?</Link>
                     
                     <p className="font-mono">
                         New to community?{' '}
